@@ -9,13 +9,7 @@ app.listen(process.env.PORT, () => {
 	console.log(`Server on port ${process.env.PORT}`);
 });
 
-// Ruta principal
-// app.get("/", (req, res) => {
-// 	console.log("Petición GET a la ruta /");
-// 	res.json({
-// 		message: "Hola mundo",
-// 	});
-// });
+app.use("/api/auth", require("./routes/auth"));
 
 // Directorio publico
 app.use(express.static("./public"));
