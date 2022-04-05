@@ -7,8 +7,21 @@ const login = (req, res = response) => {
 };
 
 const register = (req, res = response) => {
-	res.json({
+	const { name, password, email } = req.body;
+
+	if (!name || !password || !email)
+		return res.status(400).json({
+			ok: false,
+			message: "Invalid data",
+		});
+
+	res.status(201).json({
+		ok: true,
 		message: "Register OK",
+		user: {
+			name,
+			email,
+		},
 	});
 };
 
