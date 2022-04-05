@@ -10,16 +10,28 @@ const login = (req, res = response) => {
 
 // Register
 const register = async (req, res = response) => {
-	// const { name, email } = req.body;
+	const { email } = req.body;
 
 	try {
-		const user = new User(req.body);
+		// Busca el usuario
+		let user = await User.findOne({ email });
 
-		await user.save();
+		// Si el usuario existe
+		if (user) {
+			return res.status(400).json({
+				ok: false,
+				msg: "Ya existe un usuario con ese email",
+			});
+		}
+
+		user = new User(req.body); // Crea el usuario
+
+		await user.save(); // Guarda el usuario
 
 		res.status(201).json({
 			ok: true,
-			message: "Register OK",
+			uid: user.id,
+			name: user.name,
 		});
 	} catch (error) {
 		res.status(500).json({
