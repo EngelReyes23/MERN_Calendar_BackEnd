@@ -1,4 +1,5 @@
 const { response } = require("express");
+const User = require("../models/User");
 
 // Login
 const login = (req, res = response) => {
@@ -8,17 +9,26 @@ const login = (req, res = response) => {
 };
 
 // Register
-const register = (req, res = response) => {
-	const { name, email } = req.body;
+const register = async (req, res = response) => {
+	// const { name, email } = req.body;
 
-	res.status(201).json({
-		ok: true,
-		message: "Register OK",
-		user: {
-			name,
-			email,
-		},
-	});
+	try {
+		const user = new User(req.body);
+
+		await user.save();
+
+		res.status(201).json({
+			ok: true,
+			message: "Register OK",
+		});
+	} catch (error) {
+		res.status(500).json({
+			ok: false,
+			message: "Error in the register",
+			error,
+		});
+		new Error("Error creating user");
+	}
 };
 
 // Renew token
