@@ -5,13 +5,13 @@
 
 const { Router } = require("express");
 const router = Router();
+const { login, register, renewToken } = require("../controllers/auth");
 
 // Ruta principal
-router.get("/", (req, res) => {
-	console.log("Petición GET a la ruta /");
-	res.json({
-		message: "Hola mundo",
-	});
-});
+router.post("/", login);
+
+router.post("/register", register);
+
+router.get("/renewToken", renewToken);
 
 module.exports = router;
