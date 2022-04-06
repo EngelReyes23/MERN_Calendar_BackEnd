@@ -4,20 +4,23 @@ const Event = require('../models/Event');
 
 // Crea un nuevo evento
 const createEvent = async (req, res = response) => {
+  // Crea un nuevo evento
   const event = new Event(req.body);
 
   try {
+    // establece la relación con el usuario
     event.user = req.uid;
 
+    // Guarda el evento
     const createdEvent = await event.save();
 
+    // Respuesta
     res.status(201).json({
       ok: true,
       msg: 'Evento creado',
       createdEvent,
     });
   } catch (error) {
-    console.log(error);
     res.status(500).json({
       ok: false,
       msg: 'Error al crear el evento',
@@ -26,10 +29,15 @@ const createEvent = async (req, res = response) => {
 };
 
 // Obtiene todos los eventos
-const getEvents = (req, res = response) => {
+const getEvents = async (req, res = response) => {
+  // Obtiene todos los eventos
+  const eventList = await Event.find({}).populate('user', 'name');
+
+  // Respuesta
   res.json({
     ok: true,
     msg: 'Todo esta bien',
+    eventList,
   });
 };
 
