@@ -1,12 +1,54 @@
 const { response } = require('express');
 const bcrypt = require('bcryptjs');
+//
 const User = require('../models/User');
 
 // Login
-const login = (req, res = response) => {
-  res.json({
-    message: 'Login OK',
-  });
+const login = async (req, res = response) => {
+  const { email, password } = req.body;
+
+  try {
+    // Busca el usuario
+    const user = await User.findOne({ email });
+
+    // Si el usuario no existe
+    if (!user) {
+      return res.status(400).json({
+        ok: false,
+        msg: 'Usuario con ese email no existe',
+      });
+    }
+
+    // Si el usuario existe
+    // Comprueba la contraseña
+    const validPassword = bcrypt.compareSync(password, user.password);
+
+    // Si la contraseña es incorrecta
+    if (!validPassword) {
+      return res.status(400).json({
+        ok: false,
+        msg: 'Contraseña incorrecta',
+      });
+    }
+
+    // Genera el token
+    // TODO: Generar token
+
+    // Respuesta del login
+    res.json({
+      ok: true,
+      msg: 'Login OK',
+      uid: user.id,
+      name: user.name,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      msg: 'Error inesperado',
+      error,
+    });
+  }
 };
 
 // Register
@@ -33,6 +75,7 @@ const register = async (req, res = response) => {
 
     await user.save(); // Guarda el usuario
 
+    // Respuesta
     res.status(201).json({
       ok: true,
       uid: user.id,
@@ -44,7 +87,6 @@ const register = async (req, res = response) => {
       message: 'Error in the register',
       error,
     });
-    new Error('Error creating user');
   }
 };
 
