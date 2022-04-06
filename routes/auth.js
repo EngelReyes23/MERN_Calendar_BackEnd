@@ -1,9 +1,6 @@
 /* 
   Rutas de autenticación de usuarios
-  host + /api/auth
-
-  db_user : mern_user
-  db_pass : 65MOSIWYCJCoohgJ
+  path: host + /api/auth
 */
 
 const { Router } = require('express');
