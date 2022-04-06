@@ -5,6 +5,7 @@ const createEvent = (req, res = response) => {
   res.status(201).json({
     ok: true,
     msg: 'Evento creado',
+    event: req.body,
   });
 };
 
