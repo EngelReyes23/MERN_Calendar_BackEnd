@@ -6,6 +6,7 @@ const { generateJTW } = require('../helpers/jwt');
 
 // Login
 const login = async (req, res = response) => {
+  // Extrae el email y la contraseña del request
   const { email, password } = req.body;
 
   try {
@@ -55,6 +56,7 @@ const login = async (req, res = response) => {
 
 // Register
 const register = async (req, res = response) => {
+  // Extrae el email de la request
   const { email } = req.body;
 
   try {
@@ -97,9 +99,17 @@ const register = async (req, res = response) => {
 };
 
 // Renew token
-const renewToken = (req, res = response) => {
+const renewToken = async (req, res = response) => {
+  // Extrae el uid y el name del request
+  const { uid, name } = req;
+
+  // Genera el nuevo token
+  const token = await generateJTW(uid, name);
+
+  // Respuesta
   res.json({
     message: 'Renew token OK',
+    token,
   });
 };
 
