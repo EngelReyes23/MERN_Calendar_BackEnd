@@ -10,8 +10,12 @@ const {
   updateEvent,
   deleteEvent,
 } = require('../controllers/events');
+const { validateJWT } = require('../middlewares/validateJWT');
 
 const router = Router();
+
+// validateJWT en todas las rutas
+router.use(validateJWT);
 
 // Creación de eventos
 router.post('/', createEvent);
