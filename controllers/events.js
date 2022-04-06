@@ -1,5 +1,4 @@
 const { response } = require('express');
-const { events } = require('../models/Event');
 const Event = require('../models/Event');
 
 // Crea un nuevo evento
@@ -42,11 +41,51 @@ const getEvents = async (req, res = response) => {
 };
 
 // Actualiza un evento
-const updateEvent = (req, res = response) => {
-  res.json({
-    ok: true,
-    msg: 'Evento actualizado',
-  });
+const updateEvent = async (req, res = response) => {
+  const eventId = req.params.id;
+  const uid = req.uid;
+
+  try {
+    // Verifica que el evento exista
+    const event = await Event.findById(eventId);
+
+    if (!event) {
+      return res.status(404).json({
+        ok: false,
+        msg: 'Evento no encontrado',
+      });
+    }
+
+    // Verifica que el usuario sea el dueño del evento
+    if (event.user.toString() !== uid) {
+      return res.status(401).json({
+        ok: false,
+        msg: 'No tienes permisos para actualizar este evento',
+      });
+    }
+
+    const eventUpdate = {
+      ...req.body,
+      user: uid,
+    };
+
+    // Actualiza el evento
+    const updatedEvent = await Event.findByIdAndUpdate(eventId, eventUpdate, {
+      new: true,
+    });
+
+    // Respuesta
+    res.json({
+      ok: true,
+      msg: 'Evento actualizado',
+      updatedEvent,
+    });
+  } catch (error) {
+    res.status(500).json({
+      ok: false,
+      msg: 'Error al actualizar el evento',
+    });
+  }
 };
 
 // Elimina un evento
