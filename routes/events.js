@@ -11,6 +11,7 @@ const {
   updateEvent,
   deleteEvent,
 } = require('../controllers/events');
+const { validateDate } = require('../helpers/dateValidate');
 const { validateFields } = require('../middlewares/validateFields');
 const { validateJWT } = require('../middlewares/validateJWT');
 
@@ -25,9 +26,9 @@ router.post(
   [
     check('title', 'El título es obligatorio').not().isEmpty(),
     check('start', 'La fecha de inicio es obligatoria').not().isEmpty(),
-    check('start', 'La fecha no es valida').isDate(),
+    check('start', 'La fecha no es valida').custom(validateDate),
     check('end', 'La fecha de fin es obligatoria').not().isEmpty(),
-    check('end', 'La fecha no es valida').isDate(),
+    check('end', 'La fecha no es valida').custom(validateDate),
     validateFields,
   ],
   createEvent
