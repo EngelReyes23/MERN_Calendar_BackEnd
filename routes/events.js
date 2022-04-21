@@ -43,9 +43,9 @@ router.put(
   [
     check('title', 'El título es obligatorio').not().isEmpty(),
     check('start', 'La fecha de inicio es obligatoria').not().isEmpty(),
-    check('start', 'La fecha no es valida').isDate(),
+    check('start', 'La fecha no es valida').custom(validateDate),
     check('end', 'La fecha de fin es obligatoria').not().isEmpty(),
-    check('end', 'La fecha no es valida').isDate(),
+    check('end', 'La fecha no es valida').custom(validateDate),
     validateFields,
   ],
   updateEvent
